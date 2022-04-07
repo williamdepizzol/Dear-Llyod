@@ -1,0 +1,94 @@
+{%- liquid
+
+  assign product = section.settings.product 
+  assign image_one = section.settings.image_one
+  assign image_two = section.settings.image_two
+
+  -%}
+
+  <div class="editorial-wrapper page-width--narrow">
+
+    <div class="editorial-content">
+      <h2 class="h1">{{ section.settings.text }}</h2>
+      <a href="{{- product.url -}}" class="link">{{ section.settings.link_text }}</a>
+    </div>
+    <div class="editorial-media">
+      <div class="editorial-column">
+        <div class="image-wrapper" style="padding-bottom: 120%;">
+          <img
+            srcset="{%- if image_one.width >= 165 -%}{{ image_one | img_url: '165x' }} 165w,{%- endif -%}
+              {%- if image_one.width >= 360 -%}{{ image_one | img_url: '360x' }} 360w,{%- endif -%}
+              {%- if image_one.width >= 533 -%}{{ image_one | img_url: '533x' }} 533w,{%- endif -%}
+              {%- if image_one.width >= 720 -%}{{ image_one | img_url: '720x' }} 720w,{%- endif -%}
+              {%- if image_one.width >= 940 -%}{{ image_one | img_url: '940x' }} 940w,{%- endif -%}
+              {%- if image_one.width >= 1066 -%}{{ image_one | img_url: '1066x' }} 1066w,{%- endif -%}
+              {{ image_one | img_url: 'master' }} {{ image_one.width }}w"
+            src="{{ image_one | img_url: '533x' }}"
+            sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)"
+            alt="{{ image_one.alt | escape }}"
+            loading="lazy"
+            width="{{ image_one.width }}"
+            height="{{ image_one.height }}"
+          >
+        </div>
+      </div>
+      <div class="editorial-column">
+        <div class="image-wrapper" style="padding-bottom: 120%;">
+          <img
+            srcset="{%- if image_two.width >= 165 -%}{{ image_two | img_url: '165x' }} 165w,{%- endif -%}
+              {%- if image_two.width >= 360 -%}{{ image_two | img_url: '360x' }} 360w,{%- endif -%}
+              {%- if image_two.width >= 533 -%}{{ image_two | img_url: '533x' }} 533w,{%- endif -%}
+              {%- if image_two.width >= 720 -%}{{ image_two | img_url: '720x' }} 720w,{%- endif -%}
+              {%- if image_two.width >= 940 -%}{{ image_two | img_url: '940x' }} 940w,{%- endif -%}
+              {%- if image_two.width >= 1066 -%}{{ image_two | img_url: '1066x' }} 1066w,{%- endif -%}
+              {{ image_two | img_url: 'master' }} {{ image_two.width }}w"
+            src="{{ image_two | img_url: '533x' }}"
+            sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)"
+            alt="{{ image_two.alt | escape }}"
+            loading="lazy"
+            width="{{ image_two.width }}"
+            height="{{ image_two.height }}"
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% schema %}
+{
+  "name": "Editorial section",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image_one",
+      "label": "Image one"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_two",
+      "label": "Image two"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial section"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,27 @@
+{% style %}
+.newsletter-heading-script {
+  display: none;
+}
+{% endstyle %}
+
+<script>
+  window.newsletterHeading = '{{- section.settings.text -}}';
+</script>
+
+{% schema %}
+{
+  "name": "Newsletter form heading",
+  "class": "newsletter-heading-script",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Heading will be included on all newsletter signup forms across the site."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Heading"
+    }
+  ]
+}
+{% endschema %} 

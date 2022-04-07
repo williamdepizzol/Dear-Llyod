@@ -1,0 +1,119 @@
+{% comment %}theme-check-disable UndefinedObject{% endcomment %}
+{{ 'section-footer.css' | asset_url | stylesheet_tag }}
+<link rel="stylesheet" href="{{ 'component-list-menu.css' | asset_url }}" media="print" onload="this.media='all'">
+
+<noscript>{{ 'component-list-menu.css' | asset_url | stylesheet_tag }}</noscript>
+
+<footer class="footer">
+  <div class="footer-wrapper footer-wrapper__mobile">
+    <span>&copy; {{ 'now' | date: "%Y" }}, {{ shop.name }}</span>
+  </div>
+
+  <div class="footer-wrapper footer-wrapper__desktop">
+    {%- if section.settings.menu -%}
+      <ul class="list-unstyled footer__list" role="list">
+        <li>
+          <a href="{{ routes.root_url }}" class="full-unstyled-link footer__link">
+            <span {%- if link.current %} class="header__active-menu-item"{% endif %}>&copy; {{ 'now' | date: "%Y" }}, {{ shop.name }}</span>
+          </a>
+        </li>
+        {% for link in section.settings.menu.links %}
+          <li>
+            <a href="{{ link.url }}" class="full-unstyled-link footer__link"{% if link.current %} aria-current="page"{% endif %}>
+              <span {%- if link.current %} class="header__active-menu-item"{% endif %}>{{ link.title }}</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {%- if section.settings.show_social -%}
+      <ul class="list-unstyled footer__list" role="list">
+        {%- if settings.social_twitter_link != blank -%}
+          <li class="footer__link">
+            <a href="{{ settings.social_twitter_link }}" class="full-unstyled-link footer__link" >
+              <span>Twitter</span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if settings.social_facebook_link != blank -%}
+          <li class="footer__link">
+            <a href="{{ settings.social_facebook_link }}" class="full-unstyled-link footer__link" >
+              <span>Facebook</span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if settings.social_pinterest_link != blank -%}
+          <li class="footer__link">
+            <a href="{{ settings.social_pinterest_link }}" class="full-unstyled-link footer__link" >
+              <span>Pinterest</span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if settings.social_instagram_link != blank -%}
+          <li class="footer__link">
+            <a href="{{ settings.social_instagram_link }}" class="full-unstyled-link footer__link" >
+              <span>Instagram</span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if settings.social_tiktok_link != blank -%}
+          <li class="footer__link">
+            <a href="{{ settings.social_tiktok_link }}" class="full-unstyled-link footer__link" >
+              <span>TikTok</span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if settings.social_tumblr_link != blank -%}
+          <li class="footer__link">
+            <a href="{{ settings.social_tumblr_link }}" class="full-unstyled-link footer__link" >
+              <span>Tumblr</span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if settings.social_snapchat_link != blank -%}
+          <li class="footer__link">
+            <a href="{{ settings.social_snapchat_link }}" class="full-unstyled-link footer__link" >
+              <span>Snapchat</span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if settings.social_youtube_link != blank -%}
+          <li class="footer__link">
+            <a href="{{ settings.social_youtube_link }}" class="full-unstyled-link footer__link" >
+              <span>YouTube</span>
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if settings.social_vimeo_link != blank -%}
+          <li class="footer__link">
+            <a href="{{ settings.social_vimeo_link }}" class="full-unstyled-link footer__link" >
+              <span>Vimeo</span>
+            </a>
+          </li>
+        {%- endif -%}
+      </ul>
+    {%- endif -%}
+  </div>
+ </footer>
+
+
+
+{% schema %}
+{
+  "name": "t:sections.footer.name",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "footer",
+      "label": "Footer Menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "default": false,
+      "label": "Show social media menu"
+    }
+  ]
+}
+{% endschema %}

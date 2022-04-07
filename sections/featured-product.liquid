@@ -1,0 +1,218 @@
+{%- liquid
+
+  assign section_id = section.id
+
+  assign product = section.settings.product 
+  assign product_media = product.featured_media
+
+  if section.settings.supporting_image != blank
+    assign supporting_media = section.settings.supporting_image
+  elsif section.settings.supporting_video != blank
+    assign supporting_media = section.settings.supporting_video
+  else
+    assign supporting_media = product.media[1]
+  endif
+
+
+
+
+  if section.settings.layout == 'portrait'
+    assign section_wrapper = 'page-width--narrow'
+    assign padding_bottom_product = 'padding-bottom: 150%;'
+    assign padding_bottom_supporting = 'padding-bottom: 150%;'
+  else
+  assign section_wrapper = 'feature-landscape'
+    assign padding_bottom_product = 'padding-bottom: 150%;'
+    assign padding_bottom_supporting = 'padding-bottom: 66.66%;'
+  endif
+
+  -%}
+
+{% style %}
+
+  {% if product == blank %}
+
+    .{{- section_id -}}.spaced-section {
+      margin-bottom: 3rem;
+    }
+
+    @media screen and (min-width: 990px) {
+      .{{- section_id -}}.spaced-section {
+        margin-bottom: 5rem;
+      }
+    }
+
+  {% endif %}
+
+  {% if section.settings.alternate_order %}
+
+      .{{- section_id }} .featured-product__product-media {
+        order: 2;
+      }
+
+      .{{- section_id }} .featured-product__supporting-media {
+        order: 1;
+      } 
+
+      .{{- section_id }} .featured-product__info {
+        order: 3;
+      }
+
+  {% endif %}
+
+  {% if section.settings.layout == 'landscape' %}
+
+    @media screen and (max-width: 989px){
+      .{{- section_id }} .featured-product__supporting-media {
+        order: 1;
+      }
+
+      .{{- section_id }} .featured-product__product-media {
+        order: 2;
+      }
+
+      .{{- section_id }} .featured-product__info {
+        order: 3;
+      }
+
+      .feature-landscape {
+        padding-bottom: 1.8rem;
+      }
+
+    }
+
+  {% endif %}
+
+{% endstyle %}
+
+<div class="{{- section_id }} {{ section_wrapper }}">
+  <a href=" {{ product.url }}" class="featured-product-wrapper">
+    <div class="featured-product__container featured-product__product-media">
+      {%- if product_media.media_type == 'video' -%}
+        <div class="product__media media media--transparent" style="padding-top: 150%; margin-right: -1px;">
+          {{ product_media | media_tag: autoplay: "0", loop: "1", muted: "1", controls: false }}
+        </div>
+        {%- elsif product_media.media_type == 'external_video' -%}
+        <div class="product__media media media--transparent" style="padding-top: 150%; margin-right: -1px;">
+          {{ product_media | external_video_url: background: "1", autoplay: "0", loop: true | external_video_tag: class: "product-modal__video", loading: "lazy" }}
+        </div>
+      {%- else -%}
+      <div class="image-wrapper" style="{{ padding_bottom_product }} ">
+        <img
+          srcset="{%- if product_media.width >= 165 -%}{{ product_media | img_url: '165x' }} 165w,{%- endif -%}
+            {%- if product_media.width >= 360 -%}{{ product_media | img_url: '360x' }} 360w,{%- endif -%}
+            {%- if product_media.width >= 533 -%}{{ product_media | img_url: '533x' }} 533w,{%- endif -%}
+            {%- if product_media.width >= 720 -%}{{ product_media | img_url: '720x' }} 720w,{%- endif -%}
+            {%- if product_media.width >= 940 -%}{{ product_media | img_url: '940x' }} 940w,{%- endif -%}
+            {%- if product_media.width >= 1066 -%}{{ product_media | img_url: '1066x' }} 1066w,{%- endif -%}
+            {{ product_media | img_url: 'master' }} {{ product_media.width }}w"
+          src="{{ product_media | img_url: '533x' }}"
+          sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)"
+          alt="{{ product_media.alt | escape }}"
+          loading="lazy"
+          width="{{ product_media.width }}"
+          height="{{ product_media.height }}"
+        >
+      </div>
+    {%- endif -%}
+    </div>
+    <div class="featured-product__container featured-product__supporting-media">
+      {%- if supporting_media.media_type == 'video' -%}
+        <div class="product__media media media--transparent" style="padding-top: 150%; margin-right: -1px;">
+          {{ product.media[1] | media_tag: autoplay: "0", loop: "1", muted: "1", controls: false }}
+        </div>
+        {%- elsif supporting_media.media_type == 'external_video' -%}
+        <div class="product__media media media--transparent" style="padding-top: 150%; margin-right: -1px;">
+          {{ product.media[1] | external_video_url: background: "1", autoplay: "0", loop: true | external_video_tag: class: "product-modal__video", loading: "lazy" }}
+        </div>
+      {%- else -%}
+        <div class="image-wrapper" style="{{ padding_bottom_supporting }}">
+          <img
+            srcset="{%- if supporting_media.width >= 165 -%}{{ supporting_media | img_url: '165x' }} 165w,{%- endif -%}
+              {%- if supporting_media.width >= 360 -%}{{ supporting_media | img_url: '360x' }} 360w,{%- endif -%}
+              {%- if supporting_media.width >= 533 -%}{{ supporting_media | img_url: '533x' }} 533w,{%- endif -%}
+              {%- if supporting_media.width >= 720 -%}{{ supporting_media | img_url: '720x' }} 720w,{%- endif -%}
+              {%- if supporting_media.width >= 940 -%}{{ supporting_media | img_url: '940x' }} 940w,{%- endif -%}
+              {%- if supporting_media.width >= 1066 -%}{{ supporting_media | img_url: '1066x' }} 1066w,{%- endif -%}
+              {{ supporting_media | img_url: 'master' }} {{ supporting_media.width }}w"
+            src="{{ supporting_media | img_url: '533x' }}"
+            sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)"
+            alt="{{ supporting_media.alt | escape }}"
+            loading="lazy"
+            width="{{ supporting_media.width }}"
+            height="{{ supporting_media.height }}"
+          >
+        </div>
+      {%- endif -%}
+      </div>
+    {%- if product != blank -%}
+      <div class="featured-product__info">
+        <h3>{{ product.title }}</h3>
+        {% render 'price', product: product, price_class: '' %}
+      </div>
+    {%- endif -%}
+  </a>
+</div>
+
+{% schema %}
+{
+  "name": "Featured Product",
+  "tag": "section",
+  "class": "featured-product spaced-section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "header",
+      "content": "Supporting Media",
+      "info": "Leave supporting media blank to use secondary media from the selected product."
+    },
+    {
+      "type": "image_picker",
+      "id": "supporting_image",
+      "label": "Supporting Image"
+    },
+    {
+      "type": "text",
+      "id": "supporting_video",
+      "label": "Supporting Video - Vimeo ID",
+      "info": "eg '291413833' from https://vimeo.com/291413833. Use portrait videos only"
+    },
+    {
+      "type": "header",
+      "content": "Layout",
+      "info": "Careful selection of media is required when choosing landscape to avoid cropping of landscape media."
+    },
+    {
+      "type": "radio",
+      "id": "layout",
+      "label": "Orientation",
+      "options": [
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "checkbox",
+      "id": "alternate_order",
+      "default": false,
+      "label": "Switch order of media"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Product"
+    }
+  ]
+}
+{% endschema %}

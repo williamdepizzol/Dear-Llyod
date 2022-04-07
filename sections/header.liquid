@@ -1,0 +1,504 @@
+<link rel="stylesheet" href="{{ 'component-list-menu.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'component-search.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'component-menu-drawer.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'component-cart-notification.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'localization.css' | asset_url }}" media="print" onload="this.media='all'">
+{%- if settings.predictive_search_enabled -%}
+  <link rel="stylesheet" href="{{ 'component-price.css' | asset_url }}" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="{{ 'component-loading-overlay.css' | asset_url }}" media="print" onload="this.media='all'">
+{%- endif -%}
+
+<noscript>{{ 'component-list-menu.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'component-search.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'component-menu-drawer.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'component-cart-notification.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'component-cart-items.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'localization.css' | asset_url | stylesheet_tag }}</noscript>
+
+<style>
+  header-drawer {
+    justify-self: start;
+    margin-left: -1.2rem;
+  }
+
+  @media screen and (min-width: 990px) {
+    header-drawer {
+      display: none;
+    }
+  }
+
+  .menu-drawer-container {
+    display: flex;
+  }
+
+  .list-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .list-menu--inline {
+    display: inline-flex;
+    flex-wrap: wrap;
+  }
+
+  summary.list-menu__item {
+    padding-right: 2.7rem;
+  }
+
+  .list-menu__item {
+    display: flex;
+    align-items: center;
+    line-height: calc(1 + 0.3 / var(--font-body-scale));
+  }
+
+  .list-menu__item--link {
+    text-decoration: none;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    line-height: calc(1 + 0.8 / var(--font-body-scale));
+  }
+
+  @media screen and (min-width: 750px) {
+    .list-menu__item--link {
+      padding-bottom: 0.5rem;
+      padding-top: 0.5rem;
+    }
+  }
+</style>
+
+<script src="{{ 'details-disclosure.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+
+<svg xmlns="http://www.w3.org/2000/svg" class="hidden">
+  <symbol id="icon-search" viewbox="0 0 18 19" fill="none">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.03 11.68A5.784 5.784 0 112.85 3.5a5.784 5.784 0 018.18 8.18zm.26 1.12a6.78 6.78 0 11.72-.7l5.4 5.4a.5.5 0 11-.71.7l-5.41-5.4z" fill="currentColor"/>
+  </symbol>
+
+  <symbol id="icon-close" class="icon icon-close" fill="none" viewBox="0 0 18 17">
+    <path d="M.865 15.978a.5.5 0 00.707.707l7.433-7.431 7.579 7.282a.501.501 0 00.846-.37.5.5 0 00-.153-.351L9.712 8.546l7.417-7.416a.5.5 0 10-.707-.708L8.991 7.853 1.413.573a.5.5 0 10-.693.72l7.563 7.268-7.418 7.417z" fill="currentColor">
+  </symbol>
+</svg>
+
+
+<div class="header-wrapper color-{{ section.settings.color_scheme }} gradientheader-wrapper--border-bottom" id="header_wrapper">
+  <header class="header {% if section.settings.menu_1 != blank %} header--has-menu{% endif %}">
+
+    <header-drawer data-breakpoint="tablet">
+      <details id="Details-menu-drawer-container" class="menu-drawer-container">
+        <summary class="header__icon header__icon--menu header__icon--summary link focus-inset" aria-label="{{ 'sections.header.menu' | t }}">
+          <span>
+            {% render 'icon-hamburger' %}
+            {% render 'icon-close' %}
+          </span>
+        </summary>
+        <div id="menu-drawer" class="menu-drawer motion-reduce" tabindex="-1">
+          <div class="menu-drawer__inner-container">
+            <div class="menu-drawer__navigation-container">
+              <nav class="menu-drawer__navigation">
+
+
+                <ul class="menu-drawer__menu menu-drawer__main-menu list-menu" role="list">
+                  {%- for link in section.settings.menu_1.links -%}
+                    <li>
+                      {%- if link.links != blank -%}
+                        <a href="{{ link.url }}" class="link link--text list-menu__item list-menu__heading">
+                          {{ link.title }}
+                        </a>
+                        <ul class="menu-drawer__sub-menu list-menu" role="list" tabindex="-1">
+                          {%- for childlink in link.links -%}
+                            <li>
+                              {%- if childlink.links != blank -%}
+                                <ul class="menu-drawer__menu list-menu" role="list" tabindex="-1">
+                                  {%- for grandchildlink in childlink.links -%}
+                                    <li>
+                                      <a href="{{ grandchildlink.url }}" class="link link--text list-menu__item focus-inset{% if grandchildlink.current %} menu-drawer__menu-item--active{% endif %}"{% if grandchildlink.current %} aria-current="page"{% endif %}>
+                                        {{ grandchildlink.title | escape }}
+                                      </a>
+                                    </li>
+                                  {%- endfor -%}
+                                </ul>
+                              {%- else -%}
+                                <a href="{{ childlink.url }}" class="link link--text list-menu__item focus-inset{% if childlink.current %} menu-drawer__menu-item--active{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+                                  {{ childlink.title | escape }}
+                                </a>
+                              {%- endif -%}
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      {%- else -%}
+                        <a href="{{ link.url }}" class="link link--text list-menu__item list-menu__heading focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+                          {{ link.title | escape }}
+                        </a>
+                      {%- endif -%}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+                    
+                <ul class="menu-drawer__menu menu-drawer__utility-menu list-menu" role="list">
+                  {%- for link in linklists.utility-links.links -%}
+                    <li>
+                      {%- if link.links != blank -%}
+                        <ul class="menu-drawer__sub-menu list-menu" role="list" tabindex="-1">
+                          {%- for childlink in link.links -%}
+                            <li>
+                              {%- if childlink.links != blank -%}
+                                <ul class="menu-drawer__menu list-menu" role="list" tabindex="-1">
+                                  {%- for grandchildlink in childlink.links -%}
+                                    <li>
+                                      <a href="{{ grandchildlink.url }}" class="link link--text list-menu__item focus-inset{% if grandchildlink.current %} menu-drawer__menu-item--active{% endif %}"{% if grandchildlink.current %} aria-current="page"{% endif %}>
+                                        {{ grandchildlink.title | escape }}
+                                      </a>
+                                    </li>
+                                  {%- endfor -%}
+                                </ul>
+                              {%- else -%}
+                                <a href="{{ childlink.url }}" class="link link--text list-menu__item focus-inset{% if childlink.current %} menu-drawer__menu-item--active{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+                                  {{ childlink.title | escape }}
+                                </a>
+                              {%- endif -%}
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      {%- else -%}
+                        <a href="{{ link.url }}" class="link link--text list-menu__item list-menu__heading focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+                          {{ link.title | escape }}
+                        </a>
+                      {%- endif -%}
+                    </li>
+                  {%- endfor -%}
+                  {%- if shop.customer_accounts_enabled -%}
+                    <li>
+                      <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}" class="header__menu-item header__menu-item list-menu__item link link--text focus-inset {% if page_title == 'Account' %} list-menu__item--active{% endif %}"{% if page_title == 'Account' %} aria-current="page"{% endif %}>
+                        {%- liquid
+                          echo 'customer.account_fallback' | t
+                        -%}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                </ul>
+
+                <ul class="menu-drawer__menu menu-drawer__footer-menu list-menu" role="list">
+                  <li>
+                    <span class="link link--text list-menu__item list-menu__heading">eBoutique</span>
+                  </li>
+                  {%- for link in linklists.footer.links -%}
+                    <li>
+                      <a href="{{ link.url }}" class="link link--text list-menu__item focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+                        {{ link.title | escape }}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+
+                <ul class="menu-drawer__menu menu-drawer__social-menu list-menu" role="list">
+                  <li>
+                    <span class="link link--text list-menu__item list-menu__heading">Follow Us</span>
+                  </li>
+                  {%- if settings.social_twitter_link != blank -%}
+                    <li>
+                      <a href="{{ settings.social_twitter_link }}" class="link link--text list-menu__item focus-inset" >
+                        <span>Twitter</span>
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if settings.social_facebook_link != blank -%}
+                    <li>
+                      <a href="{{ settings.social_facebook_link }}" class="link link--text list-menu__item focus-inset" >
+                        <span>Facebook</span>
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if settings.social_pinterest_link != blank -%}
+                    <li>
+                      <a href="{{ settings.social_pinterest_link }}" class="link link--text list-menu__item focus-inset" >
+                        <span>Pinterest</span>
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if settings.social_instagram_link != blank -%}
+                    <li>
+                      <a href="{{ settings.social_instagram_link }}" class="link link--text list-menu__item focus-inset" >
+                        <span>Instagram</span>
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if settings.social_tiktok_link != blank -%}
+                    <li>
+                      <a href="{{ settings.social_tiktok_link }}" class="link link--text list-menu__item focus-inset" >
+                        <span>TikTok</span>
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if settings.social_tumblr_link != blank -%}
+                    <li>
+                      <a href="{{ settings.social_tumblr_link }}" class="link link--text list-menu__item focus-inset" >
+                        <span>Tumblr</span>
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if settings.social_snapchat_link != blank -%}
+                    <li>
+                      <a href="{{ settings.social_snapchat_link }}" class="link link--text list-menu__item focus-inset" >
+                        <span>Snapchat</span>
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if settings.social_youtube_link != blank -%}
+                    <li>
+                      <a href="{{ settings.social_youtube_link }}" class="link link--text list-menu__item focus-inset" >
+                        <span>YouTube</span>
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if settings.social_vimeo_link != blank -%}
+                    <li>
+                      <a href="{{ settings.social_vimeo_link }}" class="link link--text list-menu__item focus-inset" >
+                        <span>Vimeo</span>
+                      </a>
+                    </li>
+                  {%- endif -%}
+                </ul>
+
+              </nav>
+            </div>
+          </div>
+        </div>
+      </details>
+    </header-drawer>
+
+    <div class="header__left">
+      <nav class="header__inline-menu">
+        <ul class="list-menu list-menu--inline" role="list">
+          {%- for link in section.settings.menu_1.links -%}
+            <li>
+              <a href="{{ link.url }}" class="header__menu-item list-menu__item link link--text focus-inset"{% if link.current %} aria-current="page"{% endif %}>
+                <span {%- if link.current %} class="header__active-menu-item"{% endif %}>{{ link.title | escape }}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </div>
+
+    <a href="{{ routes.root_url }}" class="header__logo">
+      {% render 'wolfgang-logo-svg' %}
+    </a>
+
+    <div class="header__right">
+      <nav class="header__inline-menu">
+        <ul class="list-menu list-menu--inline" role="list">
+
+          {%- if section.settings.menu_2 -%}
+            {%- for link in section.settings.menu_2.links -%}
+              <li>
+                <a href="{{ link.url }}" class="header__menu-item header__menu-item list-menu__item link link--text focus-inset {% if link.current %} list-menu__item--active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+                  {{ link.title | escape }}
+                </a>
+              </li>
+            {%- endfor -%}
+          {%- endif -%}
+
+          {%- if section.settings.enable_country_selector and localization.available_countries.size > 1 -%}
+            <noscript>
+              {%- form 'localization', id: 'FooterCountryFormNoScript', class: 'localization-form' -%}
+                <div class="localization-form__select">
+                  <h2 class="visually-hidden" id="FooterCountryLabelNoScript">{{ 'localization.country_label' | t }}</h2>
+                  <select class="localization-selector link" name="country_code" aria-labelledby="FooterCountryLabelNoScript">
+                    {%- for country in localization.available_countries -%}
+                      <option value="{{ country.iso_code }}" {%- if country.iso_code == localization.country.iso_code %} selected{% endif %}>
+                        {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                </div>
+                <button class="button button--tertiary">{{ 'localization.update_country' | t }}</button>
+              {%- endform -%}
+            </noscript>
+            <localization-form>
+              {%- form 'localization', id: 'FooterCountryForm', class: 'localization-form' -%}
+                <div class="localization-wrapper">
+                  <div class="no-js-hidden">
+                    <div class="disclosure">
+                      <button type="button" class="header__menu-item list-menu__item link link--text localization-form__button" aria-expanded="false" aria-controls="FooterCountryList" aria-describedby="FooterCountryLabel">
+                       {{ localization.country.currency.iso_code }}
+                      </button>
+                      <ul id="FooterCountryList" role="list" class="disclosure__list currency-list list-unstyled" hidden>
+                        {%- for country in localization.available_countries -%}
+                          <li class="disclosure__item" tabindex="-1">
+                            <a class="link link--text disclosure__link caption-large{% if country.iso_code == localization.country.iso_code %} disclosure__link--active{% endif %} focus-inset" href="#"{% if country.iso_code == localization.country.iso_code %} aria-current="true"{% endif %} data-value="{{ country.iso_code }}">
+                             <span class="localization-form__currency">{{ country.currency.iso_code }}</span>
+                            </a>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    </div>
+                    <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}">
+                  </div>
+                </div>
+              {%- endform -%}
+            </localization-form>
+          {%- endif -%}
+
+          {%- if shop.customer_accounts_enabled -%}
+            <li>
+              <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}" class="header__menu-item header__menu-item list-menu__item link link--text focus-inset {% if page_title == 'Account' %} list-menu__item--active{% endif %}"{% if page_title == 'Account' %} aria-current="page"{% endif %}>
+                {%- liquid
+                  if customer
+                    echo 'customer.account_fallback' | t
+                  else
+                    echo 'Login'
+                  endif
+                -%}
+              </a>
+            </li>
+          {%- endif -%}
+        </ul>
+      </nav>
+      <div>
+        <a href="{{ routes.cart_url }}" class="header__menu-item header__menu-item list-menu__item link link--text focus-inset {% if page_title == 'Your Shopping Cart' %} list-menu__item--active{% endif %}" {% if page_title == 'Your Shopping Cart' %} aria-current="page"{% endif %} id="cart-icon-bubble">
+          <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+          <div class="cart-count-bubble">
+            {%- if cart.item_count < 100 -%}
+              {%- if cart.item_count == 0 -%}
+                <span aria-hidden="true">Bag (&#8212;)</span>
+              {%- else -%}
+                <span aria-hidden="true">Bag ( {{- cart.item_count -}} )</span>
+              {%- endif -%}
+            {%- endif -%}
+            <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </header>
+</div>
+
+{%- render 'cart-notification', color_scheme: section.settings.color_scheme -%}
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "name": {{ shop.name | json }},
+    {% if section.settings.logo %}
+      {% assign image_size = section.settings.logo.width | append: 'x' %}
+      "logo": {{ section.settings.logo | img_url: image_size | prepend: "https:" | json }},
+    {% endif %}
+    "sameAs": [
+      {{ settings.social_twitter_link | json }},
+      {{ settings.social_facebook_link | json }},
+      {{ settings.social_pinterest_link | json }},
+      {{ settings.social_instagram_link | json }},
+      {{ settings.social_tiktok_link | json }},
+      {{ settings.social_tumblr_link | json }},
+      {{ settings.social_snapchat_link | json }},
+      {{ settings.social_youtube_link | json }},
+      {{ settings.social_vimeo_link | json }}
+    ],
+    "url": {{ shop.url | append: page.url | json }}
+  }
+</script>
+
+{%- if request.page_type == 'index' -%}
+  {% assign potential_action_target = shop.url | append: routes.search_url | append: "?q={search_term_string}" %}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {{ potential_action_target | json }},
+        "query-input": "required name=search_term_string"
+      },
+      "url": {{ shop.url | append: page.url | json }}
+    }
+  </script>
+{%- endif -%}
+
+{% javascript %}
+  class LocalizationForm extends HTMLElement {
+    constructor() {
+      super();
+      this.elements = {
+        input: this.querySelector('input[name="locale_code"], input[name="country_code"]'),
+        button: this.querySelector('button'),
+        panel: this.querySelector('ul'),
+      };
+      this.elements.button.addEventListener('click', this.openSelector.bind(this));
+      this.elements.button.addEventListener('focusout', this.closeSelector.bind(this));
+      this.addEventListener('keyup', this.onContainerKeyUp.bind(this));
+
+      this.querySelectorAll('a').forEach(item => item.addEventListener('click', this.onItemClick.bind(this)));
+    }
+
+    hidePanel() {
+      this.elements.button.setAttribute('aria-expanded', 'false');
+      this.elements.panel.setAttribute('hidden', true);
+    }
+
+    onContainerKeyUp(event) {
+      if (event.code.toUpperCase() !== 'ESCAPE') return;
+
+      this.hidePanel();
+      this.elements.button.focus();
+    }
+
+    onItemClick(event) {
+      event.preventDefault();
+      const form = this.querySelector('form');
+      this.elements.input.value = event.currentTarget.dataset.value;
+      if (form) form.submit();
+    }
+
+    openSelector() {
+      this.elements.button.focus();
+      this.elements.panel.toggleAttribute('hidden');
+      this.elements.button.setAttribute('aria-expanded', (this.elements.button.getAttribute('aria-expanded') === 'false').toString());
+    }
+
+    closeSelector(event) {
+      const shouldClose = event.relatedTarget && event.relatedTarget.nodeName === 'BUTTON';
+      if (event.relatedTarget === null || shouldClose) {
+        this.hidePanel();
+      }
+    }
+  }
+
+  customElements.define('localization-form', LocalizationForm);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "class": "sticky-header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu_1",
+      "default": "main-menu",
+      "label": "Header menu one (left)"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_2",
+      "label": "Header menu two (right)"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.header__3.content",
+      "info": "t:sections.footer.settings.header__4.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_country_selector",
+      "default": true,
+      "label": "t:sections.footer.settings.enable_country_selector.label"
+    }
+  ]
+}
+{% endschema %}
